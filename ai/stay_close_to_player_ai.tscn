@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://p8kt266p7m6t"]
+
+[ext_resource type="Script" path="res://ai/stay_close_to_player.gd" id="1_457y3"]
+[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="2_2yo5x"]
+
+[node name="StayCloseToPlayerAI" type="Node"]
+script = ExtResource("1_457y3")
+curve = ExtResource("2_2yo5x")

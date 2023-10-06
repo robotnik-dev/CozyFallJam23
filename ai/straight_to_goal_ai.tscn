@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dem6ljo8uwnnk"]
+
+[ext_resource type="Script" path="res://ai/straight_to_goal.gd" id="1_s4113"]
+[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="2_tqhrp"]
+
+[node name="StraightToGoalAI" type="Node"]
+script = ExtResource("1_s4113")
+curve = ExtResource("2_tqhrp")

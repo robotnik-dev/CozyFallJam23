@@ -1,0 +1,142 @@
+[gd_scene load_steps=18 format=3 uid="uid://b63qx8bv6ntwo"]
+
+[ext_resource type="PackedScene" uid="uid://dj3n242dyjp0i" path="res://player.tscn" id="1_f148o"]
+[ext_resource type="Script" path="res://main.gd" id="1_n6cbb"]
+[ext_resource type="Texture2D" uid="uid://dt5eeeto7pur7" path="res://assets/ground.png" id="2_akyui"]
+[ext_resource type="Texture2D" uid="uid://b5m6d20g3ooji" path="res://assets/raindrop.png" id="3_fidy1"]
+[ext_resource type="PackedScene" uid="uid://1c2ekjiqvjp2" path="res://animal.tscn" id="4_josam"]
+[ext_resource type="Script" path="res://navigation_region_2d.gd" id="5_da200"]
+[ext_resource type="Script" path="res://animal_spawner.gd" id="7_ot1um"]
+[ext_resource type="PackedScene" uid="uid://0a3jvt05stou" path="res://roof.tscn" id="8_1apeg"]
+[ext_resource type="Script" path="res://path.gd" id="10_8p4ir"]
+
+[sub_resource type="Curve" id="Curve_b7lrl"]
+min_value = -1.0
+_data = [Vector2(0, 0.452632), 0.0, 0.0, 0, 0, Vector2(0.506224, 0.0526316), 0.0, 0.0, 0, 0, Vector2(1, -0.347368), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_rmkk0"]
+curve = SubResource("Curve_b7lrl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mxe66"]
+resource_local_to_scene = true
+emission_shape = 3
+emission_box_extents = Vector3(2000, 1, 1)
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+gravity = Vector3(100, 98, 0)
+initial_velocity_min = 800.0
+initial_velocity_max = 1000.0
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+hue_variation_min = 0.3
+hue_variation_max = 0.3
+hue_variation_curve = SubResource("CurveTexture_rmkk0")
+turbulence_noise_strength = 9.18
+collision_mode = 1
+collision_friction = 0.6
+collision_bounce = 0.28
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qa2h0"]
+polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_a8kbl"]
+polygon = PackedVector2Array(-64, -1, 64, 0, 64, 64, -64, 64)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_folb4"]
+texture = ExtResource("2_akyui")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+0:0/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_qa2h0")
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-64, -64, 64, -64, 64, -1, -64, -1)
+0:1/0 = 0
+0:1/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_a8kbl")
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-64, 0, 64, 0, 64, 64, -64, 64)
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+
+[sub_resource type="TileSet" id="TileSet_5pwsf"]
+tile_size = Vector2i(128, 128)
+occlusion_layer_0/light_mask = 1
+physics_layer_0/collision_layer = 1
+terrain_set_0/mode = 0
+terrain_set_0/terrain_0/name = "Bottom"
+terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+sources/0 = SubResource("TileSetAtlasSource_folb4")
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_qd8xk"]
+vertices = PackedVector2Array(1920, 1024, -491, 1020, -488, 864, 0, 864, 320, 864, 1920, 864, 320, 696, 1920, 0, 0, 0, 0, 688)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(0, 3, 4), PackedInt32Array(5, 0, 4, 6), PackedInt32Array(7, 5, 6, 8), PackedInt32Array(8, 6, 9)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-491, 1020, -488, 864, 0, 864, 320, 864, 320, 696, 0, 688, 0, 0, 1920, 0, 1920, 864, 1920, 1024)])
+
+[node name="Main" type="Node" node_paths=PackedStringArray("animal_spawner") groups=["main"]]
+script = ExtResource("1_n6cbb")
+animal_spawner = NodePath("AnimalSpawner")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(948, -155)
+amount = 500
+process_material = SubResource("ParticleProcessMaterial_mxe66")
+texture = ExtResource("3_fidy1")
+lifetime = 1.3
+speed_scale = 1.3
+randomness = 0.71
+collision_base_size = 3.0
+visibility_rect = Rect2(-997.917, -1.99847, 1994.46, 1601.12)
+trail_enabled = true
+trail_lifetime = 0.1
+trail_sections = 5
+trail_section_subdivisions = 2
+
+[node name="Player" parent="." instance=ExtResource("1_f148o")]
+position = Vector2(771, 858)
+speed = 500.0
+acceleration = 40.0
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_5pwsf")
+format = 2
+layer_0/tile_data = PackedInt32Array(524288, 0, 0, 524289, 0, 0, 524290, 0, 0, 524291, 0, 0, 524292, 0, 0, 524293, 0, 0, 524294, 0, 0, 524295, 0, 0, 524296, 0, 0, 524297, 0, 0, 524298, 0, 0, 524299, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0, 589823, 0, 0, 589822, 0, 0, 589821, 0, 0, 589820, 0, 0, 524303, 0, 0, 524304, 0, 0, 524305, 0, 0, 524306, 0, 0)
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_qd8xk")
+script = ExtResource("5_da200")
+
+[node name="Goal" type="Marker2D" parent="."]
+position = Vector2(1856, 960)
+gizmo_extents = 124.9
+
+[node name="AnimalSpawner" type="Marker2D" parent="." node_paths=PackedStringArray("destination", "roof_stop")]
+position = Vector2(-384, 944)
+gizmo_extents = 182.4
+script = ExtResource("7_ot1um")
+available_animals = Array[PackedScene]([ExtResource("4_josam")])
+destination = NodePath("../Goal")
+roof_stop = NodePath("../RoofStop")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="Roof" parent="." instance=ExtResource("8_1apeg")]
+position = Vector2(200, 809)
+
+[node name="RoofStop" type="Marker2D" parent="."]
+position = Vector2(168, 944)
+gizmo_extents = 64.5
+
+[node name="Path" type="Path2D" parent="." groups=["path"]]
+script = ExtResource("10_8p4ir")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path"]
+position = Vector2(320, 960)

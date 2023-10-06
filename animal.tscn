@@ -1,0 +1,164 @@
+[gd_scene load_steps=12 format=3 uid="uid://1c2ekjiqvjp2"]
+
+[ext_resource type="Script" path="res://animal.gd" id="1_h1txp"]
+[ext_resource type="Texture2D" uid="uid://cdtwwrfrkaanx" path="res://icon.svg" id="1_mnhx8"]
+[ext_resource type="Script" path="res://happiness_bar.gd" id="3_ijbqx"]
+[ext_resource type="PackedScene" uid="uid://p8kt266p7m6t" path="res://ai/stay_close_to_player_ai.tscn" id="4_gkbg8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
+size = Vector2(128, 128)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qbdv5"]
+polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4wbng"]
+radius = 56.5685
+
+[sub_resource type="Animation" id="Animation_6id14"]
+resource_name = "waiting_for_escort"
+length = 5.0
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.5, 0.65),
+"transitions": PackedFloat32Array(0.5, -2, -2, -2, -2, 0.5),
+"update": 0,
+"values": [0.0, 0.174533, -0.174533, 0.174533, -0.174533, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1.5, 1.7, 2.05),
+"transitions": PackedFloat32Array(0.5, 2, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_fxh44"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_i4llg"]
+resource_name = "goal_reached"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5, 1, 2),
+"transitions": PackedFloat32Array(0.5, 2, 1, 0.5, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0), Vector2(0, 0), Vector2(500, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_goal_reached"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wogkd"]
+_data = {
+"RESET": SubResource("Animation_fxh44"),
+"goal_reached": SubResource("Animation_i4llg"),
+"waiting_for_escort": SubResource("Animation_6id14")
+}
+
+[node name="Animal" type="CharacterBody2D" groups=["nav_agent"]]
+collision_layer = 4
+script = ExtResource("1_h1txp")
+speed = 250.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_7yg06")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_qbdv5")
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("1_mnhx8")
+
+[node name="HappinessBar" type="ProgressBar" parent="Body" node_paths=PackedStringArray("animal")]
+offset_left = -96.0
+offset_top = -64.0
+offset_right = -68.0
+offset_bottom = 64.0
+fill_mode = 3
+show_percentage = false
+script = ExtResource("3_ijbqx")
+animal = NodePath("../..")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 100.0
+debug_enabled = true
+
+[node name="PlayerDetect" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetect"]
+shape = SubResource("CircleShape2D_4wbng")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wogkd")
+}
+
+[node name="AnimationPlayerHearts" type="AnimationPlayer" parent="."]
+
+[node name="Hearts" type="Node2D" parent="."]
+
+[node name="StayCloseToPlayerAI" parent="." instance=ExtResource("4_gkbg8")]
+
+[node name="AntiStuckTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
+[connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]
+[connection signal="body_exited" from="PlayerDetect" to="." method="_on_player_detect_body_exited"]
+[connection signal="timeout" from="AntiStuckTimer" to="." method="_on_anti_stuck_timer_timeout"]
