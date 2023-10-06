@@ -97,12 +97,12 @@ func _get_happiness() -> Happy:
 
 func _spawn_hearts() -> void:
 	var happy = _get_happiness()
-	var num_hearts: int = 0
+	var num_hearts: int = 1
 	match happy:
 		Happy.VERY:
-			num_hearts = 3
+			num_hearts = 5
 		Happy.OKAY:
-			num_hearts = 1
+			num_hearts = 2
 		Happy.NOT:
 			pass
 	for i in range(num_hearts):

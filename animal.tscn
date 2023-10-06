@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://animal.gd" id="1_h1txp"]
 [ext_resource type="Texture2D" uid="uid://cdtwwrfrkaanx" path="res://icon.svg" id="1_mnhx8"]
 [ext_resource type="Script" path="res://happiness_bar.gd" id="3_ijbqx"]
-[ext_resource type="PackedScene" uid="uid://p8kt266p7m6t" path="res://ai/stay_close_to_player_ai.tscn" id="4_gkbg8"]
+[ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_o6jbo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
 size = Vector2(128, 128)
@@ -134,6 +134,7 @@ animal = NodePath("../..")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 100.0
+target_desired_distance = 100.0
 debug_enabled = true
 
 [node name="PlayerDetect" type="Area2D" parent="."]
@@ -153,10 +154,10 @@ libraries = {
 
 [node name="Hearts" type="Node2D" parent="."]
 
-[node name="StayCloseToPlayerAI" parent="." instance=ExtResource("4_gkbg8")]
-
 [node name="AntiStuckTimer" type="Timer" parent="."]
 autostart = true
+
+[node name="StraightToGoalAI" parent="." instance=ExtResource("4_o6jbo")]
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
 [connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]

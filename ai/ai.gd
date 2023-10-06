@@ -16,8 +16,6 @@ func get_next_stop() -> Vector2:
 	return Vector2.ZERO
 
 func is_final_stop(pos: Vector2) -> bool:
-	print("animal pos: " + str(pos))
-	print("final pos: " + str(path.get_final_position()))
 	return abs(pos - path.get_final_position()).x <= _reached_threshold
 
 func _to_string() -> String:
