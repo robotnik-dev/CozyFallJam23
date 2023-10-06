@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmlkiwe14mt5l"]
+
+[ext_resource type="Texture2D" uid="uid://cuwqiaep8bmy0" path="res://assets/goal.png" id="1_ioaty"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_vd8gw"]
+polygon = PackedVector2Array(80, -200, 80, -40, 160, 40, 1040, 40, 1040, -320, 200, -320)
+
+[node name="GoalRoof" type="Sprite2D"]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_ioaty")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_vd8gw")

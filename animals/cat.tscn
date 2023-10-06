@@ -1,9 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://1c2ekjiqvjp2"]
+[gd_scene load_steps=13 format=3 uid="uid://bofc8piu0mmqn"]
 
-[ext_resource type="Script" path="res://animal.gd" id="1_h1txp"]
-[ext_resource type="Texture2D" uid="uid://cdtwwrfrkaanx" path="res://icon.svg" id="1_mnhx8"]
-[ext_resource type="Script" path="res://happiness_bar.gd" id="3_ijbqx"]
-[ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_o6jbo"]
+[ext_resource type="Script" path="res://animal.gd" id="1_0nygh"]
+[ext_resource type="Texture2D" uid="uid://bvwwlmv3072eu" path="res://assets/cat.png" id="2_gsoje"]
+[ext_resource type="Script" path="res://happiness_bar.gd" id="3_vd1e6"]
+[ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_w1qw2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
 size = Vector2(128, 128)
@@ -12,7 +12,7 @@ size = Vector2(128, 128)
 polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4wbng"]
-radius = 56.5685
+radius = 64.0
 
 [sub_resource type="Animation" id="Animation_fxh44"]
 length = 0.001
@@ -50,7 +50,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-104, -64)]
+"values": [Vector2(-112, -64)]
 }
 
 [sub_resource type="Animation" id="Animation_i4llg"]
@@ -92,7 +92,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(1, 2),
 "transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
-"values": [Vector2(-104, -64), Vector2(392, -64)]
+"values": [Vector2(-112, -64), Vector2(376, -64)]
 }
 
 [sub_resource type="Animation" id="Animation_6id14"]
@@ -125,11 +125,10 @@ tracks/1/keys = {
 "values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_0rnvs"]
+[sub_resource type="Animation" id="Animation_qwsup"]
 resource_name = "walk"
 length = 0.5
 loop_mode = 1
-step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -148,12 +147,12 @@ _data = {
 "RESET": SubResource("Animation_fxh44"),
 "goal_reached": SubResource("Animation_i4llg"),
 "waiting_for_escort": SubResource("Animation_6id14"),
-"walk": SubResource("Animation_0rnvs")
+"walk": SubResource("Animation_qwsup")
 }
 
 [node name="Animal" type="CharacterBody2D" groups=["nav_agent"]]
 collision_layer = 4
-script = ExtResource("1_h1txp")
+script = ExtResource("1_0nygh")
 speed = 250.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -162,21 +161,19 @@ shape = SubResource("RectangleShape2D_7yg06")
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 occluder = SubResource("OccluderPolygon2D_qbdv5")
 
+[node name="Body" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_gsoje")
+
 [node name="HappinessBar" type="ProgressBar" parent="." node_paths=PackedStringArray("animal")]
-anchors_preset = -1
-anchor_left = -0.25
-anchor_bottom = 1.0
-offset_left = -104.0
+offset_left = -112.0
 offset_top = -64.0
 offset_right = -72.0
 offset_bottom = 64.0
 fill_mode = 3
 show_percentage = false
-script = ExtResource("3_ijbqx")
+script = ExtResource("3_vd1e6")
 animal = NodePath("..")
-
-[node name="Body" type="Sprite2D" parent="."]
-texture = ExtResource("1_mnhx8")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 100.0
@@ -203,7 +200,7 @@ libraries = {
 [node name="AntiStuckTimer" type="Timer" parent="."]
 autostart = true
 
-[node name="StraightToGoalAI" parent="." instance=ExtResource("4_o6jbo")]
+[node name="StraightToGoalAI" parent="." instance=ExtResource("4_w1qw2")]
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
 [connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]

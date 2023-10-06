@@ -30,7 +30,7 @@ var happiness: float = 0.0:
 	set(value):
 		happiness = clampf(value, 0.0, 100.0)
 ## between 0.1 and 1.0
-var happiness_fill_speed: float = 0.5:
+@export var happiness_fill_speed: float = 0.5:
 	set(value):
 		happiness_fill_speed = clampf(value, 0.1, 1.0)
 
@@ -82,9 +82,13 @@ func _update_animation() -> void:
 		State.WAITING_FOR_ESCORT:
 			animation_player.play("waiting_for_escort")
 		State.ON_THE_WAY:
+			animation_player.seek(0)
 			animation_player.stop()
+			animation_player.play("walk")
 		State.GOAL_REACHED:
 			_spawn_hearts()
+			animation_player.seek(0)
+			animation_player.stop()
 			animation_player.play("goal_reached")
 
 func _get_happiness() -> Happy:
@@ -97,12 +101,12 @@ func _get_happiness() -> Happy:
 
 func _spawn_hearts() -> void:
 	var happy = _get_happiness()
-	var num_hearts: int = 1
+	var num_hearts: int = 0
 	match happy:
 		Happy.VERY:
-			num_hearts = 5
+			num_hearts = 3
 		Happy.OKAY:
-			num_hearts = 2
+			num_hearts = 1
 		Happy.NOT:
 			pass
 	for i in range(num_hearts):
@@ -157,3 +161,4 @@ func _on_anti_stuck_timer_timeout() -> void:
 		else:
 			state = State.GOAL_REACHED
 			set_physics_process(false)
+			set_process(false)

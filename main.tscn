@@ -1,14 +1,17 @@
-[gd_scene load_steps=18 format=3 uid="uid://b63qx8bv6ntwo"]
+[gd_scene load_steps=21 format=3 uid="uid://b63qx8bv6ntwo"]
 
 [ext_resource type="PackedScene" uid="uid://dj3n242dyjp0i" path="res://player.tscn" id="1_f148o"]
 [ext_resource type="Script" path="res://main.gd" id="1_n6cbb"]
 [ext_resource type="Texture2D" uid="uid://dt5eeeto7pur7" path="res://assets/ground.png" id="2_akyui"]
 [ext_resource type="Texture2D" uid="uid://b5m6d20g3ooji" path="res://assets/raindrop.png" id="3_fidy1"]
-[ext_resource type="PackedScene" uid="uid://1c2ekjiqvjp2" path="res://animal.tscn" id="4_josam"]
 [ext_resource type="Script" path="res://navigation_region_2d.gd" id="5_da200"]
+[ext_resource type="PackedScene" uid="uid://bofc8piu0mmqn" path="res://animals/cat.tscn" id="7_7fxq7"]
 [ext_resource type="Script" path="res://animal_spawner.gd" id="7_ot1um"]
 [ext_resource type="PackedScene" uid="uid://0a3jvt05stou" path="res://roof.tscn" id="8_1apeg"]
+[ext_resource type="PackedScene" uid="uid://b0qk4jcoa2tpr" path="res://animals/snail.tscn" id="8_nu0lk"]
+[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="9_q5jbm"]
 [ext_resource type="Script" path="res://path.gd" id="10_8p4ir"]
+[ext_resource type="PackedScene" uid="uid://dmlkiwe14mt5l" path="res://goal_roof.tscn" id="10_sljf7"]
 
 [sub_resource type="Curve" id="Curve_b7lrl"]
 min_value = -1.0
@@ -41,8 +44,7 @@ collision_bounce = 0.28
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qa2h0"]
 polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
 
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_a8kbl"]
-polygon = PackedVector2Array(-64, -1, 64, 0, 64, 64, -64, 64)
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_jqbgj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_folb4"]
 texture = ExtResource("2_akyui")
@@ -52,22 +54,33 @@ texture_region_size = Vector2i(128, 128)
 0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-64, -64, 64, -64, 64, -1, -64, -1)
+0:0/0/physics_layer_1/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_1/angular_velocity = 0.0
 0:1/0 = 0
-0:1/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_a8kbl")
+0:1/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_jqbgj")
 0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 0:1/0/physics_layer_0/angular_velocity = 0.0
-0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-64, 0, 64, 0, 64, 64, -64, 64)
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-64, -2, 64, -2, 64, 64, -64, 64)
+0:1/0/physics_layer_1/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_1/angular_velocity = 0.0
 1:1/0 = 0
 1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0/physics_layer_1/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_1/angular_velocity = 0.0
+1:1/0/physics_layer_1/polygon_0/points = PackedVector2Array(-64, -64, 0, -64, 0, 64, -64, 64)
 1:0/0 = 0
 1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_1/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_1/angular_velocity = 0.0
+1:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(0, -64, 64, -64, 64, 64, 0, 64)
 
 [sub_resource type="TileSet" id="TileSet_5pwsf"]
 tile_size = Vector2i(128, 128)
 occlusion_layer_0/light_mask = 1
 physics_layer_0/collision_layer = 1
+physics_layer_1/collision_layer = 8
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Bottom"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
@@ -100,28 +113,29 @@ trail_sections = 5
 trail_section_subdivisions = 2
 
 [node name="Player" parent="." instance=ExtResource("1_f148o")]
-position = Vector2(771, 858)
+position = Vector2(800, 192)
+collision_mask = 9
 speed = 500.0
 acceleration = 40.0
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_5pwsf")
 format = 2
-layer_0/tile_data = PackedInt32Array(524288, 0, 0, 524289, 0, 0, 524290, 0, 0, 524291, 0, 0, 524292, 0, 0, 524293, 0, 0, 524294, 0, 0, 524295, 0, 0, 524296, 0, 0, 524297, 0, 0, 524298, 0, 0, 524299, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0, 589823, 0, 0, 589822, 0, 0, 589821, 0, 0, 589820, 0, 0, 524303, 0, 0, 524304, 0, 0, 524305, 0, 0, 524306, 0, 0)
+layer_0/tile_data = PackedInt32Array(524288, 0, 0, 524289, 0, 0, 524290, 0, 0, 524291, 0, 0, 524292, 0, 0, 524293, 0, 0, 524294, 0, 0, 524295, 0, 0, 524296, 0, 0, 524297, 0, 0, 524298, 0, 0, 524299, 0, 0, 524300, 0, 0, 524301, 0, 0, 524302, 0, 0, 589823, 0, 0, 589822, 0, 0, 589821, 0, 0, 589820, 0, 0, 524303, 0, 0, -65521, 0, 1, 15, 65536, 0, 65551, 65536, 0, 131087, 65536, 0, 196623, 65536, 0, 262159, 65536, 0, 327695, 65536, 0, 393231, 65536, 0, 458767, 65536, 0, 589819, 0, 0, 65535, 65536, 1, 131071, 65536, 1, 196607, 65536, 1, 262143, 65536, 1, 327679, 65536, 1, 393215, 65536, 1, -1, 0, 1, 458751, 65536, 1, 524287, 65536, 1, -65522, 0, 1, -65523, 0, 1, -65524, 0, 1, -65525, 0, 1, -65526, 0, 1, -65527, 0, 1, -65528, 0, 1, -65529, 0, 1, -65530, 0, 1, -65531, 0, 1, -65532, 0, 1, -65533, 0, 1, -65534, 0, 1, -65535, 0, 1, -65536, 0, 1)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_qd8xk")
 script = ExtResource("5_da200")
 
 [node name="Goal" type="Marker2D" parent="."]
-position = Vector2(1856, 960)
+position = Vector2(1792, 960)
 gizmo_extents = 124.9
 
 [node name="AnimalSpawner" type="Marker2D" parent="." node_paths=PackedStringArray("destination", "roof_stop")]
 position = Vector2(-384, 944)
 gizmo_extents = 182.4
 script = ExtResource("7_ot1um")
-available_animals = Array[PackedScene]([ExtResource("4_josam")])
+available_animals = Array[PackedScene]([ExtResource("7_7fxq7"), ExtResource("8_nu0lk")])
 destination = NodePath("../Goal")
 roof_stop = NodePath("../RoofStop")
 
@@ -136,7 +150,11 @@ position = Vector2(168, 944)
 gizmo_extents = 64.5
 
 [node name="Path" type="Path2D" parent="." groups=["path"]]
+curve = ExtResource("9_q5jbm")
 script = ExtResource("10_8p4ir")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path"]
 position = Vector2(320, 960)
+
+[node name="GoalRoof" parent="." instance=ExtResource("10_sljf7")]
+position = Vector2(1672, 824)

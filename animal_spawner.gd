@@ -7,7 +7,7 @@ signal animal_reached_destination
 @export var destination: Node2D
 @export var roof_stop: Node2D
 
-func spawn_animal(random: bool = true) -> void:
+func spawn_animal(random: bool = false) -> void:
 	var animal_scene: PackedScene
 	if random:
 		animal_scene = available_animals.pick_random()
