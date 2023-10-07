@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbpsdlb8c5mnj"]
+
+[ext_resource type="Script" path="res://ai/stops_in_order_ai.gd" id="1_4gins"]
+[ext_resource type="Curve2D" uid="uid://e1hvfer8om2m" path="res://resources/simple_fly_path.tres" id="2_4n8ka"]
+
+[node name="StopsInOrderAI" type="Node"]
+script = ExtResource("1_4gins")
+curve = ExtResource("2_4n8ka")

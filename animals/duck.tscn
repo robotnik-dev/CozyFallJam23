@@ -1,18 +1,16 @@
-[gd_scene load_steps=16 format=3 uid="uid://bofc8piu0mmqn"]
+[gd_scene load_steps=14 format=3 uid="uid://bj4wu5r6puayf"]
 
-[ext_resource type="Script" path="res://animal.gd" id="1_0nygh"]
-[ext_resource type="Texture2D" uid="uid://bvwwlmv3072eu" path="res://assets/cat.png" id="2_gsoje"]
-[ext_resource type="Script" path="res://happiness_bar.gd" id="3_vd1e6"]
-[ext_resource type="PackedScene" uid="uid://b8njm6slibnj5" path="res://ai/random_ai.tscn" id="4_4kqma"]
-[ext_resource type="PackedScene" uid="uid://p8kt266p7m6t" path="res://ai/stay_close_to_player_ai.tscn" id="4_7w2ot"]
-[ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_w1qw2"]
-[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="5_4v31m"]
+[ext_resource type="Script" path="res://animal.gd" id="1_je62y"]
+[ext_resource type="PackedScene" uid="uid://b8njm6slibnj5" path="res://ai/random_ai.tscn" id="4_tl0qn"]
+[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="5_k36ux"]
+[ext_resource type="Texture2D" uid="uid://ctqvpv25lhw0f" path="res://assets/duck.png" id="6_j75l1"]
+[ext_resource type="Script" path="res://happiness_bar.gd" id="7_0h0ah"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
 size = Vector2(128, 128)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qbdv5"]
-polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+polygon = PackedVector2Array(-20, -52, 80, -44, 80, 64, -76, 64, -88, -12, -28, -12)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4wbng"]
 radius = 64.0
@@ -153,12 +151,14 @@ _data = {
 "walk": SubResource("Animation_qwsup")
 }
 
-[node name="Cat" type="CharacterBody2D" groups=["nav_agent"]]
+[node name="Duck" type="CharacterBody2D" groups=["nav_agent"]]
 collision_layer = 4
-script = ExtResource("1_0nygh")
-speed = 250.0
-ai_scenes = Array[PackedScene]([ExtResource("4_7w2ot"), ExtResource("4_w1qw2"), ExtResource("4_4kqma")])
-curves = Array[Resource]([ExtResource("5_4v31m")])
+script = ExtResource("1_je62y")
+speed = 350.0
+water_animal = true
+ai_scenes = Array[PackedScene]([ExtResource("4_tl0qn")])
+curves = Array[Resource]([ExtResource("5_k36ux")])
+happiness_fill_speed = 0.9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_7yg06")
@@ -168,7 +168,8 @@ occluder = SubResource("OccluderPolygon2D_qbdv5")
 
 [node name="Body" type="Sprite2D" parent="."]
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_gsoje")
+texture = ExtResource("6_j75l1")
+offset = Vector2(100, 280)
 
 [node name="HappinessBar" type="ProgressBar" parent="." node_paths=PackedStringArray("animal")]
 offset_left = -112.0
@@ -177,7 +178,7 @@ offset_right = -72.0
 offset_bottom = 64.0
 fill_mode = 3
 show_percentage = false
-script = ExtResource("3_vd1e6")
+script = ExtResource("7_0h0ah")
 animal = NodePath("..")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]

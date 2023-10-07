@@ -1,18 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://b0qk4jcoa2tpr"]
+[gd_scene load_steps=14 format=3 uid="uid://b0qk4jcoa2tpr"]
 
 [ext_resource type="Script" path="res://animal.gd" id="1_ogt2q"]
 [ext_resource type="Texture2D" uid="uid://cxds4t5cgicqj" path="res://assets/snail.png" id="2_8nhnu"]
 [ext_resource type="Script" path="res://happiness_bar.gd" id="3_6i763"]
+[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="3_frmvi"]
 [ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_3o70w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
-size = Vector2(168, 96)
+size = Vector2(128, 128)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qbdv5"]
-polygon = PackedVector2Array(-84, -64, 96, -64, 96, 32, -84, 32)
+polygon = PackedVector2Array(-96, -32, 96, -32, 96, 64, -96, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1o56r"]
-size = Vector2(168, 88)
+size = Vector2(168, 96)
 
 [sub_resource type="Animation" id="Animation_fxh44"]
 length = 0.001
@@ -38,7 +39,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 0)]
+"values": [Vector2(0, 32)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -50,7 +51,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-112, -64)]
+"values": [Vector2(-124, -32)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -78,7 +79,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2, 0.5, 1, 2),
 "transitions": PackedFloat32Array(0.5, 2, 1, 0.5, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0), Vector2(0, 0), Vector2(500, 0)]
+"values": [Vector2(0, 32), Vector2(0, -144), Vector2(0, 32), Vector2(0, 32), Vector2(500, 32)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -101,10 +102,10 @@ tracks/2/path = NodePath("HappinessBar:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(1, 2),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 0.5, 1),
 "update": 0,
-"values": [Vector2(-112, -64), Vector2(376, -64)]
+"values": [Vector2(-124, -32), Vector2(-124, -32), Vector2(376, -32)]
 }
 
 [sub_resource type="Animation" id="Animation_6id14"]
@@ -131,10 +132,10 @@ tracks/1/path = NodePath("Body:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(1.5, 1.7, 2.05),
-"transitions": PackedFloat32Array(0.5, 2, 1),
+"times": PackedFloat32Array(0, 1.5, 1.7, 2.05),
+"transitions": PackedFloat32Array(1, 0.5, 2, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0)]
+"values": [Vector2(0, 32), Vector2(0, 32), Vector2(0, -144), Vector2(0, 32)]
 }
 
 [sub_resource type="Animation" id="Animation_qwsup"]
@@ -149,10 +150,36 @@ tracks/0/path = NodePath("Body:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1.35, 2),
+"times": PackedFloat32Array(0, 0.6, 2),
 "transitions": PackedFloat32Array(1, 2, 1),
 "update": 0,
 "values": [Vector2(0.1, 0.1), Vector2(0.165, 0.1), Vector2(0.1, 0.1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HappinessBar:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 2),
+"update": 0,
+"values": [Vector2(-124, -32), Vector2(-188, -32)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_trail_spawn"
+}]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wogkd"]
@@ -163,36 +190,41 @@ _data = {
 "walk": SubResource("Animation_qwsup")
 }
 
-[node name="Animal" type="CharacterBody2D" groups=["nav_agent"]]
+[node name="Snail" type="CharacterBody2D" node_paths=PackedStringArray("slime_trail_spawn") groups=["nav_agent"]]
 collision_layer = 4
 script = ExtResource("1_ogt2q")
 speed = 50.0
+slime_trail_spawn = NodePath("SlimeTrailSpawn")
+ai_scenes = Array[PackedScene]([ExtResource("4_3o70w")])
+curves = Array[Resource]([ExtResource("3_frmvi")])
+happiness_fill_speed = 0.2
+happiness_drop_speed = 0.1
+
+[node name="SlimeTrailSpawn" type="Node2D" parent="."]
+position = Vector2(-84, 56)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -16)
 shape = SubResource("RectangleShape2D_7yg06")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 occluder = SubResource("OccluderPolygon2D_qbdv5")
 
 [node name="Body" type="Sprite2D" parent="."]
+position = Vector2(0, 32)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_8nhnu")
 
 [node name="HappinessBar" type="ProgressBar" parent="." node_paths=PackedStringArray("animal")]
-offset_left = -112.0
-offset_top = -64.0
-offset_right = -84.0
-offset_bottom = 32.0
+offset_left = -124.0
+offset_top = -32.0
+offset_right = -96.0
+offset_bottom = 64.0
 fill_mode = 3
 show_percentage = false
 script = ExtResource("3_6i763")
 animal = NodePath("..")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-path_desired_distance = 100.0
-target_desired_distance = 100.0
-debug_enabled = true
 
 [node name="PlayerDetect" type="Area2D" parent="."]
 collision_layer = 0
@@ -200,7 +232,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetect"]
-position = Vector2(0, -16)
+position = Vector2(0, 16)
 shape = SubResource("RectangleShape2D_1o56r")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -214,8 +246,6 @@ libraries = {
 
 [node name="AntiStuckTimer" type="Timer" parent="."]
 autostart = true
-
-[node name="StraightToGoalAI" parent="." instance=ExtResource("4_3o70w")]
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
 [connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]

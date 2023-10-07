@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckbwdp8ednno8"]
+
+[ext_resource type="Texture2D" uid="uid://cs37k0qg00eg8" path="res://assets/slime_trail.png" id="1_6mhk1"]
+
+[node name="SlimeTrail" type="Sprite2D"]
+position = Vector2(-84, 12)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_6mhk1")

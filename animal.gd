@@ -5,8 +5,14 @@ signal goal_reached
 signal happiness_changed(value)
 
 @export var speed: float = 500.0
-@export var damp: float = 50.0
-@export var acceleration: float = 5.0
+@export var slime_trail_spawn: Node2D
+@export var flying: bool = false
+@export var water_animal: bool = false
+#@export var slime_trail_spawn_timer: Timer
+## every ai that makes sense on this animal
+@export var ai_scenes: Array[PackedScene]
+## every curve that makes sense
+@export var curves: Array[Resource]
 
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -16,7 +22,10 @@ enum State {
 	BEFORE_ROOF,
 	WAITING_FOR_ESCORT,
 	ON_THE_WAY,
-	GOAL_REACHED
+	FLY,
+	STANDING_STILL,
+	GOAL_REACHED,
+	CELEBRATING
 }
 
 enum Happy {
@@ -24,16 +33,18 @@ enum Happy {
 	OKAY,
 	NOT
 }
-
 var heart_scene: PackedScene = preload("res://heart.tscn")
-var happiness: float = 0.0:
+var slime_trai_scene: PackedScene = preload("res://slime_trail.tscn")
+var happiness: float = 100.0:
 	set(value):
 		happiness = clampf(value, 0.0, 100.0)
 ## between 0.1 and 1.0
 @export var happiness_fill_speed: float = 0.5:
 	set(value):
 		happiness_fill_speed = clampf(value, 0.1, 1.0)
-
+@export var happiness_drop_speed: float = 0.5:
+	set(value):
+		happiness_drop_speed = clampf(value, 0.1, 1.0)
 var ai: AI
 var in_rain: bool = false
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -46,50 +57,83 @@ var state: State = State.BEFORE_ROOF:
 		state = value
 		_update_animation()
 
-#func _ready() -> void:
-#	goal_pos = get_tree().get_first_node_in_group("main").get_goal_position()
-#	navigation_agent_2d.target_position = goal_pos
+@onready var default_speed = speed
+
+func _ready() -> void:
+	randomize()
+	_update_animation()
+
+func _on_trail_spawn() -> void:
+	var trail = slime_trai_scene.instantiate()
+	slime_trail_spawn.add_child(trail)
+	trail.top_level = true
+	trail.global_position = slime_trail_spawn.global_position
+
 
 func setup(_roof_stop: Vector2, _final_stop: Vector2) -> void:
 	roof_stop = _roof_stop
 	final_stop = _final_stop
 	# set first destination
 	navigation_agent_2d.target_position = roof_stop
+	_pick_random_ai()
 	ai = _get_ai_or_null()
 	if ai:
 		ai.setup()
 
 
 func _process(delta: float) -> void:
+	var fill_direction = -1.0 if water_animal else 1.0
 	if in_rain:
-		happiness -= 1.0 * happiness_fill_speed
+		happiness -= 1.0 * happiness_drop_speed * fill_direction
 	else:
-		happiness += 1.0 * happiness_fill_speed
+		happiness += 1.0 * happiness_fill_speed * fill_direction
 	happiness_changed.emit(happiness)
 
 func _physics_process(delta: float) -> void:
-#	if not navigation_agent_2d.is_navigation_finished():
-	var next_pos = navigation_agent_2d.get_next_path_position()
-	velocity.x = (next_pos - global_position).normalized().x * speed
-	
-	velocity.y += gravity * delta
+	if not navigation_agent_2d.is_navigation_finished():
+		var next_pos = navigation_agent_2d.get_next_path_position()
+		velocity.x = (next_pos - global_position).normalized().x * speed
+		if flying:
+			velocity.y = (next_pos - global_position).normalized().y * speed
+		else:
+			velocity.y += gravity * delta
+	else:
+		velocity.x = 0.0
 	move_and_slide()
+
+func _pick_random_ai() -> void:
+	var ai_scene = ai_scenes.pick_random()
+	var ai = ai_scene.instantiate()
+	add_child(ai)
+	var curve = curves.pick_random()
+	ai.curve = curve
+
 
 func _update_animation() -> void:
 	match state:
 		State.BEFORE_ROOF:
-			pass
+			animation_player.play("walk")
 		State.WAITING_FOR_ESCORT:
+			animation_player.seek(0)
+			animation_player.stop()
 			animation_player.play("waiting_for_escort")
 		State.ON_THE_WAY:
 			animation_player.seek(0)
 			animation_player.stop()
 			animation_player.play("walk")
+		State.STANDING_STILL:
+			animation_player.seek(0)
+			animation_player.stop()
 		State.GOAL_REACHED:
 			_spawn_hearts()
 			animation_player.seek(0)
 			animation_player.stop()
 			animation_player.play("goal_reached")
+		State.CELEBRATING:
+			# tood animation
+			animation_player.seek(0)
+			animation_player.stop()
+			animation_player.play("waiting_for_escort")
 
 func _get_happiness() -> Happy:
 	if happiness >= 80.0:
@@ -133,12 +177,19 @@ func _on_goal_reached() -> void:
 func _on_navigation_agent_2d_navigation_finished() -> void:
 	if state == State.BEFORE_ROOF:
 		state = State.WAITING_FOR_ESCORT
-#	elif state == State.ON_THE_WAY:
-#		if ai.is_final_stop(global_position):
-#			state = State.GOAL_REACHED
-#			set_physics_process(false)
-#		else:
-#			navigation_agent_2d.target_position = ai.get_next_stop()
+	
+	elif state == State.ON_THE_WAY:
+		speed = default_speed
+		if ai.is_final_stop(global_position):
+			set_physics_process(false)
+			set_process(false)
+			state = State.GOAL_REACHED
+		else:
+			if is_equal_approx(velocity.x, 0.0):
+				state = State.STANDING_STILL
+				return
+			var next_stop = ai.get_next_stop()
+			navigation_agent_2d.target_position = next_stop
 
 
 func _on_player_detect_body_entered(body: Node2D) -> void:
@@ -154,11 +205,11 @@ func _on_player_detect_body_exited(body: Node2D) -> void:
 
 
 func _on_anti_stuck_timer_timeout() -> void:
-	if state == State.ON_THE_WAY:
-		if not ai.is_final_stop(global_position):
-			if navigation_agent_2d.is_navigation_finished():
-				navigation_agent_2d.target_position = ai.get_next_stop()
-		else:
-			state = State.GOAL_REACHED
-			set_physics_process(false)
-			set_process(false)
+	if state == State.STANDING_STILL:
+		# move a little bit
+		speed = default_speed / 3
+		var offset = 200.0
+		var direction = 1.0 if sign(randf_range(-1.0, 1.0)) == 1 else -1.0
+		var offset_pos = Vector2(global_position.x + offset * direction, global_position.y)
+		navigation_agent_2d.target_position = offset_pos
+		state = State.ON_THE_WAY

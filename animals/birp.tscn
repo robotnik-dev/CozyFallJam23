@@ -1,21 +1,56 @@
-[gd_scene load_steps=16 format=3 uid="uid://bofc8piu0mmqn"]
+[gd_scene load_steps=20 format=3 uid="uid://c8ahxbblmvluf"]
 
-[ext_resource type="Script" path="res://animal.gd" id="1_0nygh"]
-[ext_resource type="Texture2D" uid="uid://bvwwlmv3072eu" path="res://assets/cat.png" id="2_gsoje"]
-[ext_resource type="Script" path="res://happiness_bar.gd" id="3_vd1e6"]
-[ext_resource type="PackedScene" uid="uid://b8njm6slibnj5" path="res://ai/random_ai.tscn" id="4_4kqma"]
-[ext_resource type="PackedScene" uid="uid://p8kt266p7m6t" path="res://ai/stay_close_to_player_ai.tscn" id="4_7w2ot"]
-[ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_w1qw2"]
-[ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="5_4v31m"]
+[ext_resource type="Script" path="res://animal.gd" id="1_7w5sn"]
+[ext_resource type="Texture2D" uid="uid://c0cdloud4usb1" path="res://assets/birp.png" id="2_hnxtm"]
+[ext_resource type="Script" path="res://happiness_bar.gd" id="3_e74wb"]
+[ext_resource type="PackedScene" uid="uid://b8njm6slibnj5" path="res://ai/random_ai.tscn" id="4_2qm7n"]
+[ext_resource type="PackedScene" uid="uid://bbpsdlb8c5mnj" path="res://ai/stops_in_order_ai.tscn" id="4_wmge0"]
+[ext_resource type="Curve2D" uid="uid://e1hvfer8om2m" path="res://resources/simple_fly_path.tres" id="5_frj70"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
-size = Vector2(128, 128)
+size = Vector2(88, 56)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qbdv5"]
-polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+polygon = PackedVector2Array(-48, -16, -20, -12, -8, -4, 12, -16, 36, -16, 44, 32, 24, 24, -8, 28, -36, 24, -48, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kpkwx"]
+atlas = ExtResource("2_hnxtm")
+region = Rect2(0, 0, 1012, 1012)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uoda1"]
+atlas = ExtResource("2_hnxtm")
+region = Rect2(1012, 0, 1012, 1012)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xj0l0"]
+atlas = ExtResource("2_hnxtm")
+region = Rect2(0, 1012, 1012, 1012)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qgotg"]
+atlas = ExtResource("2_hnxtm")
+region = Rect2(1012, 1012, 1012, 1012)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_013em"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kpkwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uoda1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xj0l0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qgotg")
+}],
+"loop": true,
+"name": &"Fly",
+"speed": 5.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4wbng"]
-radius = 64.0
+radius = 52.0
 
 [sub_resource type="Animation" id="Animation_fxh44"]
 length = 0.001
@@ -53,7 +88,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-112, -64)]
+"values": [Vector2(-80, -44)]
 }
 
 [sub_resource type="Animation" id="Animation_i4llg"]
@@ -95,7 +130,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(1, 2),
 "transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
-"values": [Vector2(-112, -64), Vector2(376, -64)]
+"values": [Vector2(-80, -44), Vector2(376, -44)]
 }
 
 [sub_resource type="Animation" id="Animation_6id14"]
@@ -132,18 +167,6 @@ tracks/1/keys = {
 resource_name = "walk"
 length = 0.5
 loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Body:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.13, 0.25, 0.37, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, -0.174533, 0.0, 0.174533, 0.0]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wogkd"]
 _data = {
@@ -153,12 +176,13 @@ _data = {
 "walk": SubResource("Animation_qwsup")
 }
 
-[node name="Cat" type="CharacterBody2D" groups=["nav_agent"]]
+[node name="Birp" type="CharacterBody2D" groups=["nav_agent"]]
 collision_layer = 4
-script = ExtResource("1_0nygh")
+script = ExtResource("1_7w5sn")
 speed = 250.0
-ai_scenes = Array[PackedScene]([ExtResource("4_7w2ot"), ExtResource("4_w1qw2"), ExtResource("4_4kqma")])
-curves = Array[Resource]([ExtResource("5_4v31m")])
+flying = true
+ai_scenes = Array[PackedScene]([ExtResource("4_wmge0"), ExtResource("4_2qm7n")])
+curves = Array[Resource]([ExtResource("5_frj70")])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_7yg06")
@@ -166,18 +190,22 @@ shape = SubResource("RectangleShape2D_7yg06")
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 occluder = SubResource("OccluderPolygon2D_qbdv5")
 
-[node name="Body" type="Sprite2D" parent="."]
+[node name="Body" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_gsoje")
+sprite_frames = SubResource("SpriteFrames_013em")
+animation = &"Fly"
+autoplay = "Fly"
+frame = 1
+frame_progress = 0.861038
 
 [node name="HappinessBar" type="ProgressBar" parent="." node_paths=PackedStringArray("animal")]
-offset_left = -112.0
-offset_top = -64.0
-offset_right = -72.0
-offset_bottom = 64.0
+offset_left = -80.0
+offset_top = -44.0
+offset_right = -56.0
+offset_bottom = 44.0
 fill_mode = 3
 show_percentage = false
-script = ExtResource("3_vd1e6")
+script = ExtResource("3_e74wb")
 animal = NodePath("..")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
