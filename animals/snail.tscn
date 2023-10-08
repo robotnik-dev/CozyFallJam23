@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://b0qk4jcoa2tpr"]
+[gd_scene load_steps=15 format=3 uid="uid://b0qk4jcoa2tpr"]
 
 [ext_resource type="Script" path="res://animal.gd" id="1_ogt2q"]
 [ext_resource type="Texture2D" uid="uid://cxds4t5cgicqj" path="res://assets/snail.png" id="2_8nhnu"]
 [ext_resource type="Script" path="res://happiness_bar.gd" id="3_6i763"]
 [ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="3_frmvi"]
 [ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_3o70w"]
+[ext_resource type="AudioStream" uid="uid://r35png4fcxb7" path="res://assets/notiface.mp3" id="6_ssw2i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
 size = Vector2(128, 128)
@@ -246,6 +247,10 @@ libraries = {
 
 [node name="AntiStuckTimer" type="Timer" parent="."]
 autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_ssw2i")
+volume_db = -6.0
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
 [connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]

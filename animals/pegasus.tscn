@@ -1,0 +1,244 @@
+[gd_scene load_steps=22 format=3 uid="uid://csa8tkbvakw3f"]
+
+[ext_resource type="Script" path="res://animal.gd" id="1_5y7k8"]
+[ext_resource type="PackedScene" uid="uid://bbpsdlb8c5mnj" path="res://ai/stops_in_order_ai.tscn" id="2_2y71u"]
+[ext_resource type="PackedScene" uid="uid://b8njm6slibnj5" path="res://ai/random_ai.tscn" id="3_y4hbo"]
+[ext_resource type="Curve2D" uid="uid://bp3uq71eis0i" path="res://resources/fly_zig_zag_path.tres" id="4_a6s53"]
+[ext_resource type="Curve2D" uid="uid://e1hvfer8om2m" path="res://resources/simple_fly_path.tres" id="4_cfrai"]
+[ext_resource type="Texture2D" uid="uid://nxt1guuq7xp7" path="res://assets/pegasus.png" id="5_gsrkg"]
+[ext_resource type="Script" path="res://happiness_bar.gd" id="6_xtqlp"]
+[ext_resource type="AudioStream" uid="uid://ccte1r0reqipr" path="res://assets/Blastwave_FX_HorseBlowLips_S08AN.123.mp3" id="8_ykevr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
+size = Vector2(88, 56)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qbdv5"]
+polygon = PackedVector2Array(-64, -60, -28, -64, 12, -68, 64, -80, 104, -40, 96, 72, -20, 88, -92, 84, -88, -12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h7pkx"]
+atlas = ExtResource("5_gsrkg")
+region = Rect2(0, 0, 1012, 1012)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_84iy5"]
+atlas = ExtResource("5_gsrkg")
+region = Rect2(1012, 0, 1012, 1012)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5fmj"]
+atlas = ExtResource("5_gsrkg")
+region = Rect2(0, 1012, 1012, 1012)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05dxg"]
+atlas = ExtResource("5_gsrkg")
+region = Rect2(1012, 1012, 1012, 1012)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_013em"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h7pkx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_84iy5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x5fmj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05dxg")
+}],
+"loop": true,
+"name": &"Fly",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4wbng"]
+radius = 72.111
+
+[sub_resource type="Animation" id="Animation_fxh44"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("HappinessBar:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-116, -44)]
+}
+
+[sub_resource type="Animation" id="Animation_i4llg"]
+resource_name = "goal_reached"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5, 1, 2),
+"transitions": PackedFloat32Array(0.5, 2, 1, 0.5, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0), Vector2(0, 0), Vector2(500, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_goal_reached"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("HappinessBar:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 0.5, 1),
+"update": 0,
+"values": [Vector2(-116, -44), Vector2(-116, -44), Vector2(376, -44)]
+}
+
+[sub_resource type="Animation" id="Animation_6id14"]
+resource_name = "waiting_for_escort"
+length = 5.0
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.4, 0.5, 0.65),
+"transitions": PackedFloat32Array(0.5, -2, -2, -2, -2, 0.5),
+"update": 0,
+"values": [0.0, 0.174533, -0.174533, 0.174533, -0.174533, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1.5, 1.7, 2.05),
+"transitions": PackedFloat32Array(0.5, 2, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -144), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_qwsup"]
+resource_name = "walk"
+length = 0.5
+loop_mode = 1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wogkd"]
+_data = {
+"RESET": SubResource("Animation_fxh44"),
+"goal_reached": SubResource("Animation_i4llg"),
+"waiting_for_escort": SubResource("Animation_6id14"),
+"walk": SubResource("Animation_qwsup")
+}
+
+[node name="Pegasus" type="CharacterBody2D" groups=["nav_agent"]]
+collision_layer = 4
+script = ExtResource("1_5y7k8")
+speed = 150.0
+flying = true
+ai_scenes = Array[PackedScene]([ExtResource("2_2y71u"), ExtResource("3_y4hbo")])
+curves = Array[Resource]([ExtResource("4_cfrai"), ExtResource("4_a6s53")])
+happiness_fill_speed = 0.2
+happiness_drop_speed = 0.9
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_7yg06")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_qbdv5")
+
+[node name="Body" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+sprite_frames = SubResource("SpriteFrames_013em")
+animation = &"Fly"
+autoplay = "Fly"
+frame_progress = 0.785231
+
+[node name="HappinessBar" type="ProgressBar" parent="." node_paths=PackedStringArray("animal")]
+offset_left = -116.0
+offset_top = -44.0
+offset_right = -92.0
+offset_bottom = 84.0
+fill_mode = 3
+show_percentage = false
+script = ExtResource("6_xtqlp")
+animal = NodePath("..")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="PlayerDetect" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetect"]
+shape = SubResource("CircleShape2D_4wbng")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wogkd")
+}
+
+[node name="AnimationPlayerHearts" type="AnimationPlayer" parent="."]
+
+[node name="Hearts" type="Node2D" parent="."]
+
+[node name="AntiStuckTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_ykevr")
+volume_db = -6.0
+
+[connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
+[connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]
+[connection signal="body_exited" from="PlayerDetect" to="." method="_on_player_detect_body_exited"]
+[connection signal="timeout" from="AntiStuckTimer" to="." method="_on_anti_stuck_timer_timeout"]

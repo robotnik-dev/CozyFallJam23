@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://b63qx8bv6ntwo"]
+[gd_scene load_steps=31 format=3 uid="uid://b63qx8bv6ntwo"]
 
 [ext_resource type="PackedScene" uid="uid://dj3n242dyjp0i" path="res://player.tscn" id="1_f148o"]
 [ext_resource type="Script" path="res://main.gd" id="1_n6cbb"]
@@ -6,16 +6,21 @@
 [ext_resource type="Texture2D" uid="uid://b5m6d20g3ooji" path="res://assets/raindrop.png" id="3_fidy1"]
 [ext_resource type="Script" path="res://navigation_region_2d.gd" id="5_da200"]
 [ext_resource type="PackedScene" uid="uid://bofc8piu0mmqn" path="res://animals/cat.tscn" id="7_7fxq7"]
-[ext_resource type="Curve2D" uid="uid://e1hvfer8om2m" path="res://resources/simple_fly_path.tres" id="7_kegjg"]
+[ext_resource type="Curve2D" uid="uid://cljtxb7l3eg45" path="res://resources/fly_circle_path.tres" id="7_jmoym"]
 [ext_resource type="Script" path="res://animal_spawner.gd" id="7_ot1um"]
 [ext_resource type="PackedScene" uid="uid://0a3jvt05stou" path="res://roof.tscn" id="8_1apeg"]
 [ext_resource type="PackedScene" uid="uid://b0qk4jcoa2tpr" path="res://animals/snail.tscn" id="8_nu0lk"]
 [ext_resource type="Script" path="res://path.gd" id="10_8p4ir"]
 [ext_resource type="PackedScene" uid="uid://dmlkiwe14mt5l" path="res://goal_roof.tscn" id="10_sljf7"]
 [ext_resource type="PackedScene" uid="uid://bj4wu5r6puayf" path="res://animals/duck.tscn" id="11_kgvps"]
+[ext_resource type="PackedScene" uid="uid://cpiqwadvmgtjg" path="res://animals/bee.tscn" id="11_s0k7m"]
 [ext_resource type="PackedScene" uid="uid://c8ahxbblmvluf" path="res://animals/birp.tscn" id="11_sa4as"]
+[ext_resource type="PackedScene" uid="uid://c53j0yveuw6re" path="res://animals/totoro.tscn" id="11_y4jfu"]
 [ext_resource type="Script" path="res://game_finished_spawner.gd" id="14_85khd"]
+[ext_resource type="PackedScene" uid="uid://csa8tkbvakw3f" path="res://animals/pegasus.tscn" id="15_784wb"]
 [ext_resource type="Texture2D" uid="uid://dybxw423fxic7" path="res://assets/hill.png" id="16_2at3x"]
+[ext_resource type="AudioStream" uid="uid://0run63qpm0fp" path="res://assets/west_wolf_Countryside_rain_with_far_thunders.mp3" id="17_8ma7t"]
+[ext_resource type="AudioStream" uid="uid://mq3q5gd3k6md" path="res://assets/music_zapsplat_beautiful_reef.mp3" id="21_wcj5n"]
 
 [sub_resource type="Curve" id="Curve_b7lrl"]
 min_value = -1.0
@@ -28,22 +33,20 @@ curve = SubResource("Curve_b7lrl")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mxe66"]
 resource_local_to_scene = true
 emission_shape = 3
-emission_box_extents = Vector3(2000, 1, 1)
+emission_box_extents = Vector3(1000, 1, 1)
 particle_flag_disable_z = true
 direction = Vector3(0, 1, 0)
 spread = 0.0
 gravity = Vector3(100, 98, 0)
-initial_velocity_min = 800.0
-initial_velocity_max = 1000.0
+initial_velocity_min = 700.0
+initial_velocity_max = 800.0
 orbit_velocity_min = 0.0
 orbit_velocity_max = 0.0
 hue_variation_min = 0.3
 hue_variation_max = 0.3
 hue_variation_curve = SubResource("CurveTexture_rmkk0")
 turbulence_noise_strength = 9.18
-collision_mode = 1
-collision_friction = 0.6
-collision_bounce = 0.28
+collision_mode = 2
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_qa2h0"]
 polygon = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
@@ -111,21 +114,20 @@ game_won_spawner = NodePath("GameFinishedSpawner")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 position = Vector2(948, -155)
-amount = 500
+amount = 400
 process_material = SubResource("ParticleProcessMaterial_mxe66")
 texture = ExtResource("3_fidy1")
-lifetime = 1.3
+lifetime = 2.0
 speed_scale = 1.3
 randomness = 0.71
 collision_base_size = 3.0
 visibility_rect = Rect2(-997.917, -1.99847, 1994.46, 1601.12)
-trail_enabled = true
 trail_lifetime = 0.1
 trail_sections = 5
 trail_section_subdivisions = 2
 
 [node name="Player" parent="." instance=ExtResource("1_f148o")]
-position = Vector2(800, 192)
+position = Vector2(920, 552)
 collision_mask = 9
 speed = 500.0
 acceleration = 40.0
@@ -154,12 +156,12 @@ position = Vector2(168, 944)
 gizmo_extents = 64.5
 
 [node name="Path" type="Path2D" parent="." groups=["path"]]
-curve = ExtResource("7_kegjg")
+curve = ExtResource("7_jmoym")
 script = ExtResource("10_8p4ir")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path"]
-position = Vector2(280, 936)
-rotation = -1.97031
+position = Vector2(384, 888)
+rotation = -0.764125
 
 [node name="GoalRoof" parent="." instance=ExtResource("10_sljf7")]
 position = Vector2(1672, 824)
@@ -168,7 +170,10 @@ position = Vector2(1672, 824)
 position = Vector2(-384, 944)
 gizmo_extents = 182.4
 script = ExtResource("7_ot1um")
-available_animals = Array[PackedScene]([ExtResource("7_7fxq7"), ExtResource("11_sa4as"), ExtResource("8_nu0lk"), ExtResource("11_kgvps")])
+available_animals = Array[PackedScene]([ExtResource("15_784wb"), ExtResource("11_s0k7m"), ExtResource("11_sa4as"), ExtResource("8_nu0lk")])
+first_animal = ExtResource("7_7fxq7")
+middle_animal = ExtResource("11_kgvps")
+last_animal = ExtResource("11_y4jfu")
 destination = NodePath("../Goal")
 roof_stop = NodePath("../RoofStop")
 
@@ -192,3 +197,12 @@ position = Vector2(960, 540)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 texture = ExtResource("16_2at3x")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("17_8ma7t")
+autoplay = true
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("21_wcj5n")
+volume_db = -24.0
+autoplay = true

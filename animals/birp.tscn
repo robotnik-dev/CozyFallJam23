@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c8ahxbblmvluf"]
+[gd_scene load_steps=21 format=3 uid="uid://c8ahxbblmvluf"]
 
 [ext_resource type="Script" path="res://animal.gd" id="1_7w5sn"]
 [ext_resource type="Texture2D" uid="uid://c0cdloud4usb1" path="res://assets/birp.png" id="2_hnxtm"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b8njm6slibnj5" path="res://ai/random_ai.tscn" id="4_2qm7n"]
 [ext_resource type="PackedScene" uid="uid://bbpsdlb8c5mnj" path="res://ai/stops_in_order_ai.tscn" id="4_wmge0"]
 [ext_resource type="Curve2D" uid="uid://e1hvfer8om2m" path="res://resources/simple_fly_path.tres" id="5_frj70"]
+[ext_resource type="AudioStream" uid="uid://c50sx4midbyyj" path="res://assets/animals_bird_nestling_or_chick_tweet_001.mp3" id="7_1w6e6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
 size = Vector2(88, 56)
@@ -230,6 +231,10 @@ libraries = {
 [node name="AntiStuckTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_1w6e6")
+volume_db = -6.0
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
 [connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]

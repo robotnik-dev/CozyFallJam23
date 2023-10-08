@@ -8,6 +8,7 @@ signal happiness_changed(value)
 @export var slime_trail_spawn: Node2D
 @export var flying: bool = false
 @export var water_animal: bool = false
+@export var wait_for_escort: bool = true
 #@export var slime_trail_spawn_timer: Timer
 ## every ai that makes sense on this animal
 @export var ai_scenes: Array[PackedScene]
@@ -17,6 +18,7 @@ signal happiness_changed(value)
 @onready var navigation_agent_2d: NavigationAgent2D = $NavigationAgent2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var hearts: Node2D = $Hearts
+@onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
 
 enum State {
 	BEFORE_ROOF,
@@ -38,13 +40,13 @@ var slime_trai_scene: PackedScene = preload("res://slime_trail.tscn")
 var happiness: float = 100.0:
 	set(value):
 		happiness = clampf(value, 0.0, 100.0)
-## between 0.1 and 1.0
+## between 0.0 and 1.0
 @export var happiness_fill_speed: float = 0.5:
 	set(value):
-		happiness_fill_speed = clampf(value, 0.1, 1.0)
+		happiness_fill_speed = clampf(value, 0.0, 1.0)
 @export var happiness_drop_speed: float = 0.5:
 	set(value):
-		happiness_drop_speed = clampf(value, 0.1, 1.0)
+		happiness_drop_speed = clampf(value, 0.0, 1.0)
 var ai: AI
 var in_rain: bool = false
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -60,6 +62,11 @@ var state: State = State.BEFORE_ROOF:
 @onready var default_speed = speed
 
 func _ready() -> void:
+	var boring_timer = Timer.new()
+	add_child(boring_timer)
+	boring_timer.wait_time = 10.0
+	boring_timer.timeout.connect(_on_boring_timer_timeout)
+	boring_timer.start()
 	randomize()
 	_update_animation()
 
@@ -145,12 +152,12 @@ func _get_happiness() -> Happy:
 
 func _spawn_hearts() -> void:
 	var happy = _get_happiness()
-	var num_hearts: int = 0
+	var num_hearts: int = 1
 	match happy:
 		Happy.VERY:
-			num_hearts = 3
+			num_hearts = 5
 		Happy.OKAY:
-			num_hearts = 1
+			num_hearts = 3
 		Happy.NOT:
 			pass
 	for i in range(num_hearts):
@@ -176,13 +183,20 @@ func _on_goal_reached() -> void:
 
 func _on_navigation_agent_2d_navigation_finished() -> void:
 	if state == State.BEFORE_ROOF:
-		state = State.WAITING_FOR_ESCORT
+		if wait_for_escort:
+			state = State.WAITING_FOR_ESCORT
+		else:
+			state = State.ON_THE_WAY
+			navigation_agent_2d.target_position = ai.get_next_stop()
+			return
 	
 	elif state == State.ON_THE_WAY:
 		speed = default_speed
 		if ai.is_final_stop(global_position):
 			set_physics_process(false)
 			set_process(false)
+			audio_stream_player.play()
+			await audio_stream_player.finished
 			state = State.GOAL_REACHED
 		else:
 			if is_equal_approx(velocity.x, 0.0):
@@ -213,3 +227,8 @@ func _on_anti_stuck_timer_timeout() -> void:
 		var offset_pos = Vector2(global_position.x + offset * direction, global_position.y)
 		navigation_agent_2d.target_position = offset_pos
 		state = State.ON_THE_WAY
+
+
+func _on_boring_timer_timeout() -> void:
+	if state == State.WAITING_FOR_ESCORT:
+		audio_stream_player.play()

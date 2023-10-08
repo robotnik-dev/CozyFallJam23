@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://jpxwag06sbpt"]
+
+[ext_resource type="FontFile" uid="uid://biij5fhtixg7h" path="res://assets/Pacifico-Regular.ttf" id="1_yb561"]
+
+[resource]
+font = ExtResource("1_yb561")
+font_size = 61
+font_color = Color(0, 0, 0, 1)

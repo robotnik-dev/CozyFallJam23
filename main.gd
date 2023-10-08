@@ -3,7 +3,7 @@ extends Node
 @export var animal_spawner: AnimalSpawner
 @export var ui: CanvasLayer
 @export var game_won_spawner: Node2D
-@export var points_to_win: int = 30
+@export var points_to_win: int = 35
 
 var game_complete_scene: PackedScene = preload("res://game_complete_screen.tscn")
 var game_finished: bool = false

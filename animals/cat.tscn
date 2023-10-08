@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bofc8piu0mmqn"]
+[gd_scene load_steps=17 format=3 uid="uid://bofc8piu0mmqn"]
 
 [ext_resource type="Script" path="res://animal.gd" id="1_0nygh"]
 [ext_resource type="Texture2D" uid="uid://bvwwlmv3072eu" path="res://assets/cat.png" id="2_gsoje"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://p8kt266p7m6t" path="res://ai/stay_close_to_player_ai.tscn" id="4_7w2ot"]
 [ext_resource type="PackedScene" uid="uid://dem6ljo8uwnnk" path="res://ai/straight_to_goal_ai.tscn" id="4_w1qw2"]
 [ext_resource type="Curve2D" uid="uid://brx0a7hhan2s8" path="res://resources/straight_line_path.tres" id="5_4v31m"]
+[ext_resource type="AudioStream" uid="uid://u7x53uxn6xth" path="res://assets/Blastwave_FX_CatMeow_SFXB.203.mp3" id="8_u05ro"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yg06"]
 size = Vector2(128, 128)
@@ -202,6 +203,10 @@ libraries = {
 [node name="AntiStuckTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_u05ro")
+volume_db = -6.0
 
 [connection signal="navigation_finished" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_navigation_finished"]
 [connection signal="body_entered" from="PlayerDetect" to="." method="_on_player_detect_body_entered"]
